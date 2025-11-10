@@ -2,7 +2,7 @@
 
 }
 
-.options {
+.shops_options {
     position: relative;
     background-color: #0a0d13;
     height: 60px;
@@ -11,7 +11,7 @@
     flex-direction: row;
 }
 
-.searchbar {
+.shops_searchbar {
     background-color: #1b212c;
     position: relative;
     outline: none;
@@ -25,11 +25,11 @@
     transition: ease-in-out 0.3s;
 }
 
-.searchbar:focus {
+.shops_searchbar:focus {
     outline: solid 1px #1358dc;
 }
 
-.filter {
+.shops_filter {
     background-color: #1b212c;
     height: 40px;
     line-height: 40px;
@@ -40,7 +40,7 @@
     transition: all ease-in-out 0.2s;
 }
 
-.filter:hover {
+.shops_filter:hover {
     transform: scale(1.05);
 }
 
@@ -54,7 +54,7 @@
     overflow: scroll;
 }
 
-.shop {
+.shops_item {
     position: relative;
     background-color: #0f1219;
     height: 400px;
@@ -63,7 +63,7 @@
     border-radius: 10px;
 }
 
-.shop_info {
+.shops_item_info {
     position: absolute;
     bottom: 0;
     background-color: black;

@@ -1,0 +1,125 @@
+.shop {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.shop_info {
+    text-align: center;
+}
+
+.shop_options {
+    position: relative;
+    background-color: #0a0d13;
+    height: 60px;
+    min-width: fit-content;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+
+}
+
+.shop_searchbar {
+    background-color: #1b212c;
+    position: relative;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    height: 40px;
+    width: 400px;
+    padding-left: 10px;
+    margin: 10px;
+    box-sizing: border-box;
+    transition: ease-in-out 0.3s;
+}
+
+.shop_searchbar:focus {
+    outline: solid 1px #1358dc;
+}
+
+.shop_filter {
+    background-color: #1b212c;
+    height: 40px;
+    line-height: 40px;
+    width: 80px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 10px;
+    transition: all ease-in-out 0.2s;
+}
+
+.shop_filter:hover {
+    transform: scale(1.05);
+}
+
+.shop_items_container {
+    background-color: #1b212c;
+    border-radius: 10px 10px 0 0;
+    width: 90%;
+    height: 1000px;
+    overflow: scroll;
+}
+
+.shop_section {
+    position: relative;
+    height: 60px;
+}
+
+.section_title {
+    z-index: 2;
+    position: relative;
+    background-color: #1b212c;
+    width: fit-content;
+    margin: 0 auto 0 auto;
+    padding: 10px;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 30px;
+
+}
+
+.shop_divider {
+    position: absolute;
+    top: 50%;
+    left: 2.5%;
+    background-color: white;
+    width: 95%;
+    margin: 0 auto 0 auto;
+    height: 2px;
+}
+
+.shop_item {
+    position: relative;
+    background-color: rgba(10, 13, 19, 0.6);
+    width: 100%;
+    height: 100px;
+    border-radius: 10px;
+}
+
+.shop_item_title {
+    margin: 5px;
+    font-size: 20px;
+    width: fit-content;
+}
+
+.shop_item_description {
+    margin: 5px;
+    font-size: 15px;
+    max-width: 50%;
+    height: 73px;
+    overflow: hidden;
+}
+
+.shop_item_buy {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    background-color: #1b212c;
+    height: 50px;
+    width: 100px;
+    text-align: center;
+    line-height: 50px;
+    border-radius: 5px;
+    margin: 5px
+}
