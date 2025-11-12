@@ -2,6 +2,11 @@
   "name": "orderly",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8000",
+  "options": {
+    "proxy": "http://localhost:8000",
+    "allowedHosts": "all"
+  },
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -19,6 +24,7 @@
     "router": "^2.2.0",
     "Router": "^2.1.0",
     "typescript": "^4.9.5",
+    "universal-cookie": "^8.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
