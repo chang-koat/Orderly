@@ -5,6 +5,7 @@ import Home from './Components/Home/Home'
 import Navbar from "./Components/Navbar/Navbar";
 import Shops from "./Components/Shops/Shops";
 import Shop from "./Components/Shop/Shop";
+import Checkout from "./Components/Checkout/Checkout";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
               <Route index element={<Home/>}/>
               <Route path="/shops" element={<Shops/>}/>
               <Route path="/shop" element={<Shop/>}/>
+              <Route path="/cart" element={<Checkout/>}/>
           </Routes>
       </main>
   );
