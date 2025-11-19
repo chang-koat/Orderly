@@ -147,6 +147,21 @@
 
 }
 
+.customize_cancel_button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 20px;
+    font-size: 25px;
+    font-weight: bold;
+    transition: all ease-in-out 0.3s;
+}
+
+.customize_cancel_button:hover {
+    font-size: 28px;
+    margin: 18px;
+}
+
 #customize_form {
     display: flex;
     flex-direction: column;
@@ -194,4 +209,16 @@
 
 .form_select_option {
 
+}
+
+.shop_added_popup {
+    position: absolute;
+    top: 15%;
+    width: 300px;
+    height: 80px;
+    line-height: 80px;
+    font-size: 20px;
+    background-color: #0f1219;
+    text-align: center;
+    border-radius: 10px;
 }

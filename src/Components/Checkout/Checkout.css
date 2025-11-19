@@ -49,3 +49,64 @@
 .checkout_purchase_button:hover {
     transform: scale(1.05);
 }
+
+.checkout_item {
+    position: relative;
+    background-color: rgba(10, 13, 19, 0.6);
+    width: 100%;
+    min-height: 80px;
+    height: fit-content;
+    border-radius: 10px;
+}
+
+.checkout_remove_item {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all ease-in-out 0.3s;
+}
+
+.checkout_remove_item:hover {
+    transform: scale(1.05);
+    color: #1358dc;
+}
+
+.checkout_item_title {
+    margin: 5px;
+    font-size: 20px;
+    width: fit-content;
+}
+
+.checkout_item_description {
+    margin: 5px;
+    font-size: 15px;
+    max-width: 50%;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.checkout_item_price {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    font-size: 26px;
+}
+
+.checkout_item_customizations {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 5px;
+}
+
+.checkout_item_customizations > p {
+    margin: 0;
+}
+
+.checkout_item_list > h1{
+    width: 100%;
+    text-align: center;
+}
