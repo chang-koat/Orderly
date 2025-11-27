@@ -71,7 +71,7 @@
 .summary-note {
   margin-top: 0.6rem;
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: #000000;
 }
 
 .payment-form-wrapper h3 {
@@ -102,6 +102,7 @@
   font-size: 0.95rem;
   outline: none;
   background-color: #f9fafb;
+  color: #000;
 }
 
 .payment-form input:focus,
@@ -168,3 +169,26 @@ textarea {
   background: rgba(220, 38, 38, 0.1);
   color: #b91c1c;
 }
+
+.payment-form .form-row label span {
+  color: #000 !important;
+  font-weight: 600;
+}
+
+.payment-form input,
+.payment-form textarea {
+  background-color: #f3f4f6 !important;  /* soft dark gray */
+  border: 1px solid #d1d5db;
+  color: #000; /* keep text readable */
+}
+
+/* When user clicks into the box */
+.payment-form input:focus,
+.payment-form textarea:focus {
+  background-color: #ffffff !important;
+  border-color: #10b981;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25);
+  color: #000;
+}
+
+
