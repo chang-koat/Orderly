@@ -1,57 +1,117 @@
-import './Shops.css'
-import Cookies from "universal-cookie";
-import axios from "axios";
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-/*TODO:
-    Open shop page:
-        Create shop page.
-        Wrap shop with link and open shop page, pass data about opened shop.
-        Request shop data from backend to load onto the page.
-*/
+// src/Components/Shops/Shops.tsx
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Shops.css";
 
-export default function Shops() {
+import { Store, fetchStores } from "../../api";
 
-    let nav = useNavigate()
-    const [stores, setStores] = useState([]);
+const Shops: React.FC = () => {
+  const navigate = useNavigate();
 
-    async function renderShops() {
-        //Send request to backend for stores.
-        const cookies = new Cookies()
-        const response = await axios.post('/api/stores/', {
-                message: 'Load All Stores'},
-            {withCredentials: true,
-                headers: {"X-CSRFToken": cookies.get("csrftoken")}})
-            .then(response => {
-                //Load stores
-                let data = response.data
-                setStores(data)
-            })
+  const [shops, setShops] = useState<Store[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [status, setStatus] = useState<string | null>(null);
+  const [search, setSearch] = useState<string>("");
 
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoading(true);
+        setStatus(null);
+
+        // ✅ GET /api/stores/
+        const data = await fetchStores();
+        const normalized = data.map((s) => ({
+          ...s,
+          // fall back so we never render an empty name
+          name: s.Name || s.UUID || "Unnamed shop",
+        }));
+
+        console.log("Shops from backend:", normalized);
+        setShops(normalized);
+      } catch (err: any) {
+        console.error("Error loading shops:", err);
+        // show the real error text if we have it
+        const msg =
+          typeof err?.message === "string"
+            ? err.message
+            : "Could not load shops. Please try again.";
+        setStatus(msg);
+        setShops([]);
+      } finally {
+        setLoading(false);
+      }
     }
 
-    useEffect(() => {
-        renderShops()
-    }, [])
+    load();
+  }, []);
 
-    return (
-        <div className="shops">
-            <div className="shops_options">
-                <input className="shops_searchbar" type="text" placeholder="Search" />
-                <div className="shops_filter">Filter</div>
-            </div>
+  const filteredShops = shops.filter((shop) =>
+    (shop.name || "").toLowerCase().includes(search.toLowerCase())
+  );
 
-            <h2>Featured Shops</h2>
-            <div className="shops_container" id="shops_container">
-                {stores.map((store, index) => (
-                    <div className="shops_item" onClick={() => {nav('/shop', {state: {store: store}})}}>
-                        <div className="shops_item_info">
-                            <h3>{store['Name']}</h3>
-                            <h4>Distance/rating or some other info here</h4>
-                        </div>
-                    </div>
-                ))}
-            </div>
+  function handleOpenShop(shop: Store) {
+    navigate("/shop", { state: { store: shop } });
+  }
+
+  return (
+    <div className="shops-page">
+      <header className="shops-header">
+        <h1 className="shops-title">Featured Shops</h1>
+        <div className="shops-search-wrapper">
+          <input
+            type="text"
+            placeholder="Search shops"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="shops-search-input"
+          />
+          <button className="shops-filter-btn" type="button">
+            Filter
+          </button>
         </div>
-    )
-}
+      </header>
+
+      {status && (
+        <p className="shops-status shops-status-error">
+          {status}
+        </p>
+      )}
+
+      {loading ? (
+        <p className="shops-status">Loading shops…</p>
+      ) : filteredShops.length === 0 ? (
+        <p className="shops-status">No shops found.</p>
+      ) : (
+        <div className="shops-grid">
+          {filteredShops.map((shop) => (
+            <button
+              key={shop.UUID}
+              type="button"
+              className="shop-card"
+              onClick={() => handleOpenShop(shop)}
+            >
+              <div className="shop-card-image">
+                {/* You can swap this for a real image field later */}
+                <span className="shop-card-initial">
+                  {(shop.name || "?")[0].toUpperCase()}
+                </span>
+              </div>
+              <div className="shop-card-info">
+                <div className="shop-card-name">{shop.name}</div>
+                <div className="shop-card-desc">
+                  {shop.Description || "Everything you need, in one place."}
+                </div>
+                <div className="shop-card-meta">
+                  {shop.Address || "Online only"}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Shops;

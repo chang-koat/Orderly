@@ -2,6 +2,16 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-    position: absolute;
-    top: 0;
+}
+
+/* --- FORCE GLOBAL SCROLL --- */
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto; /* allow vertical scroll */
 }

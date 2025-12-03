@@ -1,19 +1,33 @@
 .account-page {
-  min-height: calc(100vh - 80px);
+  height: 100vh;
+  overflow-y: auto; 
+  padding-bottom: 40px; 
+}
+
+/* Layout for the whole account page */
+.account-page {
+  min-height: 100vh;
+  padding: 24px 16px 40px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
 }
 
+/* The white card in the center */
 .account-card {
   width: 100%;
-  max-width: 520px;
-  background: #fdfdfd;
-  border-radius: 14px;
-  padding: 1.75rem 1.75rem 1.5rem;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+  max-width: 800px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .account-card {
+    padding: 16px;
+  }
 }
 
 .account-header h2 {

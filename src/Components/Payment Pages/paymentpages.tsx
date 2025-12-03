@@ -1,191 +1,230 @@
-import React, { useState } from "react";
-import api from "../../api";
+// src/Components/Payment Pages/paymentpages.tsx
+import React, { useEffect, useState } from "react";
 import "./paymentpages.css";
-
-interface PaymentForm {
-  nameOnCard: string;
-  cardNumber: string;
-  expiry: string;
-  cvv: string;
-  billingAddress: string;
-}
+import {
+  PaymentMethod,
+  fetchPaymentMethods,
+  addPaymentMethod,
+  deletePaymentMethod,
+} from "../../api";
 
 const PaymentPage: React.FC = () => {
-  const [form, setForm] = useState<PaymentForm>({
-    nameOnCard: "",
-    cardNumber: "",
-    expiry: "",
-    cvv: "",
-    billingAddress: "",
-  });
+  const [nameOnCard, setNameOnCard] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [zip, setZip] = useState("");
 
+  const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const [statusType, setStatusType] = useState<"success" | "error" | null>(
-    null
-  );
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
+  const [methods, setMethods] = useState<PaymentMethod[]>([]);
+  const [loadingMethods, setLoadingMethods] = useState(true);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        setLoadingMethods(true);
+        setStatus(null);
+        const data = await fetchPaymentMethods();
+        setMethods(data);
+      } catch (err) {
+        console.error(err);
+        setStatus("Could not load saved payment methods.");
+        setMethods([]);
+      } finally {
+        setLoadingMethods(false);
+      }
+    }
+    load();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setStatus(null);
-    setStatusType(null);
 
-    if (!form.nameOnCard || !form.cardNumber || !form.expiry || !form.cvv) {
-      setStatus("Please fill in all required card details.");
-      setStatusType("error");
+    if (!nameOnCard || !cardNumber || !expiry) {
+      setStatus("Please fill in name, card number, and expiry.");
       return;
     }
 
     try {
-      setIsSubmitting(true);
-      const response = await api.post("/api/payments/", {
-        name_on_card: form.nameOnCard,
-        card_number: form.cardNumber,
-        expiry: form.expiry,
-        cvv: form.cvv,
-        billing_address: form.billingAddress,
+      setSaving(true);
+      setStatus(null);
+
+      const newMethod = await addPaymentMethod({
+        name_on_card: nameOnCard,
+        card_number: cardNumber,
+        expiry,
+        cvv,
+        zip,
       });
 
-      console.log(response.data);
-      setStatus("Payment processed successfully (demo).");
-      setStatusType("success");
+      setMethods((prev) => [newMethod, ...prev]);
+
+      // clear sensitive bits
+      setCardNumber("");
+      setCvv("");
+
+      setStatus("Card saved successfully.");
     } catch (err) {
       console.error(err);
-      setStatus("Could not process payment. Please try again.");
-      setStatusType("error");
+      setStatus("Could not save card. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    try {
+      setDeletingId(id);
+      setStatus(null);
+      await deletePaymentMethod(id);
+      setMethods((prev) => prev.filter((m) => m.id !== id));
+    } catch (err) {
+      console.error(err);
+      setStatus("Could not delete card. Please try again.");
+    } finally {
+      setDeletingId(null);
     }
   }
 
   return (
     <div className="payment-page">
-      <div className="payment-card">
-        <div className="payment-header">
-          <h2>Checkout</h2>
-          <p>Review your order and enter your payment details.</p>
-        </div>
+      <div className="payment-header">
+        <h2 className="payment-title">Payment methods</h2>
+        <p className="payment-subtitle">
+          Save a card to use during checkout. This demo only stores the last 4
+          digits, not the full card number or CVV.
+        </p>
+      </div>
 
-        <div className="payment-layout">
-          {/* Order Summary */}
-          <section className="order-summary">
-            <h3>Order Summary</h3>
-            <div className="summary-row">
-              <span>Items</span>
-              <span>$32.00</span>
-            </div>
-            <div className="summary-row">
-              <span>Tax</span>
-              <span>$2.56</span>
-            </div>
-            <div className="summary-row summary-total">
-              <span>Total</span>
-              <span>$34.56</span>
-            </div>
-            <p className="summary-note">* Demo values for class project</p>
-          </section>
+      {status && <p className="payment-status">{status}</p>}
 
-          {/* Payment Form */}
-          <section className="payment-form-wrapper">
-            <h3>Payment Details</h3>
+      <div className="payment-layout">
+        {/* LEFT: add card */}
+        <div className="payment-column">
+          <div className="payment-panel">
+            <h3 className="payment-panel-title">Add a card</h3>
 
             <form className="payment-form" onSubmit={handleSubmit}>
-              <div className="form-row">
-                <label>
-                  <span>Name on card *</span>
-                  <input
-                    name="nameOnCard"
-                    value={form.nameOnCard}
-                    onChange={handleChange}
-                    type="text"
-                    placeholder="Name on card"
-                  />
-                </label>
-              </div>
+              <label className="payment-label">
+                Name on card
+                <input
+                  type="text"
+                  value={nameOnCard}
+                  onChange={(e) => setNameOnCard(e.target.value)}
+                  className="payment-input"
+                  placeholder="Chang Koat"
+                  required
+                />
+              </label>
 
-              <div className="form-row">
-                <label>
-                  <span>Card number *</span>
-                  <input
-                    name="cardNumber"
-                    value={form.cardNumber}
-                    onChange={handleChange}
-                    type="text"
-                    placeholder="1234 5678 9012 3456"
-                  />
-                </label>
-              </div>
+              <label className="payment-label">
+                Card number
+                <input
+                  type="text"
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
+                  className="payment-input"
+                  placeholder="4242 4242 4242 4242"
+                  required
+                />
+              </label>
 
-              <div className="form-row payment-grid">
-                <label>
-                  <span>Expiry (MM/YY) *</span>
+              <div className="payment-row">
+                <label className="payment-label payment-row-item">
+                  Expiry
                   <input
-                    name="expiry"
-                    value={form.expiry}
-                    onChange={handleChange}
                     type="text"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
+                    className="payment-input"
                     placeholder="12/27"
+                    required
                   />
                 </label>
 
-                <label>
-                  <span>CVV *</span>
+                <label className="payment-label payment-row-item">
+                  CVV
                   <input
-                    name="cvv"
-                    value={form.cvv}
-                    onChange={handleChange}
                     type="password"
+                    value={cvv}
+                    onChange={(e) => setCvv(e.target.value)}
+                    className="payment-input"
                     placeholder="123"
                   />
                 </label>
               </div>
 
-              <div className="form-row">
-                <label>
-                  <span>Billing address</span>
-                  <textarea
-                    name="billingAddress"
-                    value={form.billingAddress}
-                    onChange={handleChange}
-                    rows={3}
-                    placeholder="Street, city, state, ZIP"
-                  />
-                </label>
-              </div>
+              <label className="payment-label">
+                ZIP code
+                <input
+                  type="text"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
+                  className="payment-input"
+                  placeholder="68102"
+                />
+              </label>
 
-              <button className="pay-btn" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Processing..." : "Pay $34.56"}
+              <button
+                className="payment-save-btn"
+                type="submit"
+                disabled={saving}
+              >
+                {saving ? "Saving…" : "Save card"}
               </button>
-
-              {status && (
-                <p
-                  className={`payment-status ${
-                    statusType === "success" ? "status-success" : "status-error"
-                  }`}
-                >
-                  {status}
-                </p>
-              )}
             </form>
-          </section>
+          </div>
+        </div>
+
+        {/* RIGHT: saved cards */}
+        <div className="payment-column">
+          <div className="payment-panel">
+            <h3 className="payment-panel-title">Saved cards</h3>
+
+            {loadingMethods ? (
+              <p>Loading your cards…</p>
+            ) : methods.length === 0 ? (
+              <p className="payment-empty">
+                You don’t have any saved cards yet.
+              </p>
+            ) : (
+              <div className="payment-card-list">
+                {methods.map((m) => (
+                  <div key={m.id} className="payment-card-item">
+                    <div className="payment-card-main">
+                      <div className="payment-card-name">
+                        {m.name_on_card || "Saved card"}
+                      </div>
+                      <div className="payment-card-details">
+                        <span>•••• {m.card_last4}</span>
+                        <span> · Expires {m.expiry}</span>
+                        {m.zip && <span> · {m.zip}</span>}
+                      </div>
+                      <div className="payment-card-meta">
+                        Added {new Date(m.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+
+                    <button
+                      className="payment-delete-btn"
+                      onClick={() => handleDelete(m.id)}
+                      disabled={deletingId === m.id}
+                    >
+                      {deletingId === m.id ? "Removing…" : "Remove"}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-
-
 export default PaymentPage;
-
 

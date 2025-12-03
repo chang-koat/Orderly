@@ -1,24 +1,28 @@
 * {
-    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: white;
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  color: white;
 }
 
+/* let React handle layout, don't pin root */
 #root {
-    position: absolute;
-    top: 0;
+  position: static;
 }
 
+/* let the page scroll, just give main a background + min height */
 main {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    background: #000;
-    background: linear-gradient(-45deg, rgb(28, 38, 85) 0%, rgb(17, 19, 30) 100%);
-    z-index: -100;
+  width: 100vw;
+  min-height: 100vh; /* was height: 100vh */
+  position: relative; /* was fixed */
+  top: 0;
+  background: linear-gradient(
+    -45deg,
+    rgb(28, 38, 85) 0%,
+    rgb(17, 19, 30) 100%
+  );
+  z-index: 0; /* no negative z-index */
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
-
